@@ -1,0 +1,26 @@
+﻿venv/
+.venv/
+backend/venv/
+__pycache__/
+*.pyc
+node_modules/
+.env
+.env.local
+
+# Build and cache files
+.next/
+**/.next/
+node_modules/
+**/node_modules/
+*.tsbuildinfo
+
+# Database and generated data
+*.db
+backend/chroma_db/
+backend/uploads/
+uploads/
+chroma_db/
+
+# Python cache
+__pycache__/
+*.pyc
