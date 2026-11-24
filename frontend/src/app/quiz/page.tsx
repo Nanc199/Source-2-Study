@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { collectionsApi, quizApi } from '@/lib/api';
 import { ClipboardCheck, Loader2, Clock, CheckCircle2, XCircle, ChevronLeft, ChevronRight, Trophy, RotateCcw } from 'lucide-react';
+import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
 
 type Phase = 'setup' | 'quiz' | 'results';
 
@@ -133,23 +134,57 @@ export default function QuizPage() {
 
         {/* Question Card */}
         <div className="bg-white rounded-2xl border border-gray-100 p-8 mb-6">
-          <p className="text-lg font-medium text-gray-900 mb-6 leading-relaxed">{q.question}</p>
+          <div className="text-lg font-medium text-gray-900 mb-6 leading-relaxed">
+            <MarkdownRenderer content={q.question || ''} />
+          </div>
           <div className="space-y-3">
             {(q.options || []).map((opt: string, i: number) => {
-              const letter = opt.charAt(0) === 'A' || opt.charAt(0) === 'B' || opt.charAt(0) === 'C' || opt.charAt(0) === 'D' ? opt.charAt(0) : String.fromCharCode(65 + i);
+              const trimmed = opt.trim();
+              const match = trimmed.match(/^(?:\(([A-Da-d])\)|([A-Da-d])[\.\)]\s*)\s*(.*)/);
+              let letter = String.fromCharCode(65 + i);
+              let cleanText = trimmed;
+              if (match) {
+                letter = (match[1] || match[2]).toUpperCase();
+                cleanText = match[3];
+              } else if (trimmed.startsWith('A') || trimmed.startsWith('B') || trimmed.startsWith('C') || trimmed.startsWith('D')) {
+                letter = trimmed.charAt(0).toUpperCase();
+              }
               const isSelected = answers[q.id] === letter;
               return (
-                <button key={i} onClick={() => selectAnswer(q.id, letter)}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
-                    isSelected ? 'border-purple-500 bg-purple-50' : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
-                  }`}>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
-                      isSelected ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-500'
-                    }`}>{letter}</div>
-                    <span className="text-sm text-gray-700">{opt}</span>
+                <label
+                  key={i}
+                  htmlFor={`quiz_q_${q.id}_opt_${letter}`}
+                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    isSelected
+                      ? 'border-purple-600 bg-purple-50/50 shadow-sm ring-1 ring-purple-600'
+                      : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50/70 bg-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5 flex-1">
+                    <input
+                      type="radio"
+                      id={`quiz_q_${q.id}_opt_${letter}`}
+                      name={`quiz_radio_group_${q.id}`}
+                      value={letter}
+                      checked={isSelected}
+                      onChange={() => selectAnswer(q.id, letter)}
+                      className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500 cursor-pointer"
+                    />
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 transition-colors ${
+                        isSelected
+                          ? 'bg-purple-600 text-white shadow-sm'
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {letter}
+                    </div>
+                    <span className="text-sm font-medium text-gray-800 leading-relaxed">
+                      {cleanText || opt}
+                    </span>
                   </div>
-                </button>
+                  <span className="text-xs font-semibold text-gray-400 pl-2">Option {letter}</span>
+                </label>
               );
             })}
           </div>
@@ -205,7 +240,9 @@ export default function QuizPage() {
           <div className="space-y-3">
             {answersData.map((a: any, i: number) => (
               <div key={i} className={`bg-white rounded-xl border p-5 ${a.is_correct ? 'border-emerald-200' : 'border-red-200'}`}>
-                <p className="text-sm font-medium text-gray-900 mb-2">{i + 1}. {a.question}</p>
+                <div className="text-sm font-medium text-gray-900 mb-2">
+                  <MarkdownRenderer content={`${i + 1}. ${a.question || ''}`} />
+                </div>
                 <div className="flex flex-wrap gap-2 text-xs mb-2">
                   <span className={`px-2 py-1 rounded-full ${a.is_correct ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
                     {a.is_correct ? '✓ Correct' : '✗ Wrong'}
@@ -213,7 +250,11 @@ export default function QuizPage() {
                   {!a.is_correct && <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-600">Your answer: {a.user_answer || 'None'}</span>}
                   <span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-600">Correct: {a.correct_answer}</span>
                 </div>
-                {a.explanation && <p className="text-xs text-gray-500 mt-1">💡 {a.explanation}</p>}
+                {a.explanation && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    <MarkdownRenderer content={`💡 ${a.explanation}`} />
+                  </div>
+                )}
               </div>
             ))}
           </div>

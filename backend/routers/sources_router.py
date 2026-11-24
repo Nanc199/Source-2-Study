@@ -1,5 +1,5 @@
 """
-StudyMind AI - Sources Router
+Source2Study - Sources Router
 """
 
 import os
@@ -134,7 +134,7 @@ def add_url_source(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Add a website URL as a source."""
+    """Add a website URL as a source with upfront SSRF and protocol validation."""
     collection = (
         db.query(Collection)
         .filter(Collection.id == collection_id, Collection.user_id == current_user.id)
@@ -143,12 +143,18 @@ def add_url_source(
     if not collection:
         raise HTTPException(status_code=404, detail="Collection not found")
 
+    from services.document_processor import DocumentProcessor
+    try:
+        validated_url = DocumentProcessor.validate_safe_url(data.url)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
     source = Source(
         collection_id=collection_id,
         user_id=current_user.id,
-        original_filename=data.title or data.url,
+        original_filename=data.title or validated_url,
         file_type="url",
-        url=data.url,
+        url=validated_url,
         status="pending",
     )
     db.add(source)

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { collectionsApi, questionsApi } from '@/lib/api';
 import { Database, Search, FileText, Copy, Check } from 'lucide-react';
+import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
 
 export default function QuestionBankPage() {
   const [collections, setCollections] = useState<any[]>([]);
@@ -76,7 +77,9 @@ export default function QuestionBankPage() {
             <div key={q.id} className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-sm transition-shadow">
               <div className="flex items-start gap-3">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-900 leading-relaxed">{q.question_text}</p>
+                  <div className="text-sm text-gray-900 leading-relaxed">
+                    <MarkdownRenderer content={q.question_text || ''} />
+                  </div>
                   <div className="flex items-center gap-2 mt-2 text-xs text-gray-400 flex-wrap">
                     <span className="flex items-center gap-1"><FileText className="w-3 h-3" /> {q.source_filename || 'Unknown'}</span>
                     {q.year && <span className="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">{q.year}</span>}

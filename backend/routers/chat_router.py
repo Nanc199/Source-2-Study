@@ -1,5 +1,5 @@
 """
-StudyMind AI - Chat Router
+Source2Study - Chat Router
 """
 
 from typing import List

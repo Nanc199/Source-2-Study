@@ -1,5 +1,5 @@
 """
-StudyMind AI - Study Material Generator Router
+Source2Study - Study Material Generator Router
 """
 
 from typing import List, Optional

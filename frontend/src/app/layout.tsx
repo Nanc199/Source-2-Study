@@ -4,10 +4,10 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
-  title: 'StudyMind AI - AI-Powered Learning & Exam Preparation',
+  title: 'Source2Study - AI-Powered Learning & Exam Preparation',
   description:
-    'Transform your study materials into summaries, quizzes, flashcards, and smart question banks with AI-powered learning.',
-  keywords: ['AI', 'study', 'learning', 'exam preparation', 'quiz', 'flashcards', 'question bank'],
+    'Transform your study materials into summaries, quizzes, flashcards, and a smart duplicate-free question bank with Source2Study.',
+  keywords: ['Source2Study', 'AI', 'study', 'learning', 'exam preparation', 'quiz', 'flashcards', 'question bank'],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
