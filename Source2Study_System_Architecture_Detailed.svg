@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+<title id="title">Source2Study System Architecture</title>
+<desc id="desc">A student uses the Next.js frontend, which communicates via REST API with a FastAPI backend. The backend connects to Gemini, Sentence Transformers, SQLite, ChromaDB, and file storage. It supports grounded chat, study material generation, duplicate question detection, quizzes, flashcards, and exports.</desc>
+<defs>
+  <marker id="arrowPurple" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M1 1L11 6L1 11Z" fill="#5427C8"/></marker>
+  <marker id="arrowNavy" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M1 1L11 6L1 11Z" fill="#183B8F"/></marker>
+  <marker id="arrowOrange" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M1 1L11 6L1 11Z" fill="#E57B16"/></marker>
+  <linearGradient id="purpleHead" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#6338D1"/><stop offset="1" stop-color="#3F1CA9"/></linearGradient>
+  <linearGradient id="backendFill" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#F4F0FF"/><stop offset="1" stop-color="#E8E0FF"/></linearGradient>
+  <style>
+    .title{font:700 42px Arial,sans-serif;fill:#17134B}.subtitle{font:600 21px Arial,sans-serif;fill:#fff;letter-spacing:.6px}.boxTitle{font:700 24px Arial,sans-serif;fill:#1B2450}.section{font:700 21px Arial,sans-serif;fill:#fff}.body{font:400 18px Arial,sans-serif;fill:#26324A}.small{font:400 16px Arial,sans-serif;fill:#344054}.tiny{font:400 15px Arial,sans-serif;fill:#475467}.stroke{stroke:#7B61D1;stroke-width:2.5}.flow{fill:none;stroke:#5427C8;stroke-width:5;marker-end:url(#arrowPurple);stroke-linecap:round;stroke-linejoin:round}.integrate{fill:none;stroke:#E57B16;stroke-width:4;marker-end:url(#arrowOrange);stroke-linecap:round}.data{fill:none;stroke:#183B8F;stroke-width:4;marker-end:url(#arrowNavy);stroke-linecap:round;stroke-linejoin:round}
+  </style>
+</defs>
+<rect width="1600" height="1000" fill="#FFFFFF"/>
+<circle cx="84" cy="105" r="64" fill="#F1EDFF"/><circle cx="1515" cy="102" r="75" fill="#F5F2FF"/>
+<text x="800" y="75" text-anchor="middle" class="title">Source2Study</text>
+<rect x="595" y="95" width="410" height="43" rx="21" fill="url(#purpleHead)"/>
+<text x="800" y="124" text-anchor="middle" class="subtitle">SYSTEM ARCHITECTURE</text>
+
+<!-- AI services -->
+<rect x="885" y="165" width="250" height="100" rx="18" fill="#FFF3E4" stroke="#E89A3C" stroke-width="2.5"/>
+<text x="1010" y="198" text-anchor="middle" class="boxTitle">Gemini API</text>
+<text x="1010" y="226" text-anchor="middle" class="small">LLM generation and verification</text>
+<rect x="1160" y="165" width="330" height="100" rx="18" fill="#FFF3E4" stroke="#E89A3C" stroke-width="2.5"/>
+<text x="1325" y="198" text-anchor="middle" class="boxTitle">Sentence Transformers</text>
+<text x="1325" y="226" text-anchor="middle" class="small">all-MiniLM-L6-v2 embeddings</text>
+
+<!-- user -->
+<rect x="55" y="350" width="225" height="170" rx="22" fill="#EEF4FF" stroke="#7C9DEB" stroke-width="2.5"/>
+<circle cx="168" cy="398" r="27" fill="#DCE7FF" stroke="#5375D6" stroke-width="2"/>
+<circle cx="168" cy="390" r="9" fill="#5375D6"/><path d="M150 417c2-12 10-18 18-18s16 6 18 18" fill="#5375D6"/>
+<text x="168" y="462" text-anchor="middle" class="boxTitle">Student / User</text>
+<text x="168" y="491" text-anchor="middle" class="small">Uploads and studies</text>
+
+<!-- frontend -->
+<rect x="350" y="300" width="270" height="325" rx="22" fill="#EEF4FF" stroke="#4285EB" stroke-width="2.5"/>
+<rect x="350" y="300" width="270" height="55" rx="20" fill="#DCEAFF"/>
+<text x="485" y="337" text-anchor="middle" class="boxTitle">Frontend · Next.js</text>
+<text x="378" y="390" class="body">• Collections and uploads</text>
+<text x="378" y="425" class="body">• Grounded AI chat</text>
+<text x="378" y="460" class="body">• Study material generation</text>
+<text x="378" y="495" class="body">• Duplicate question review</text>
+<text x="378" y="530" class="body">• Quizzes and flashcards</text><text x="378" y="565" class="tiny">Sources: PDF · DOCX · PPTX · images</text><text x="378" y="590" class="tiny">web URLs · YouTube transcripts</text>
+
+<!-- API -->
+<rect x="685" y="360" width="160" height="145" rx="20" fill="#F4EEFF" stroke="#8061D5" stroke-width="2.5"/>
+<text x="765" y="414" text-anchor="middle" class="boxTitle">REST API</text>
+<text x="765" y="447" text-anchor="middle" class="small">HTTP / JSON</text>
+<text x="765" y="477" text-anchor="middle" class="tiny">JWT protected routes</text>
+
+<!-- backend -->
+<rect x="910" y="305" width="345" height="255" rx="22" fill="url(#backendFill)" stroke="#7650CD" stroke-width="2.8"/>
+<rect x="910" y="305" width="345" height="58" rx="20" fill="url(#purpleHead)"/>
+<text x="1082" y="343" text-anchor="middle" class="section">FastAPI Backend</text>
+<text x="940" y="400" class="body">• Document processing and RAG</text>
+<text x="940" y="438" class="body">• Study content and quiz generation</text>
+<text x="940" y="476" class="body">• Semantic duplicate detection</text>
+<text x="940" y="514" class="body">• Authentication and API logic</text>
+
+<!-- database/storage -->
+<rect x="1320" y="300" width="230" height="100" rx="18" fill="#EFF9F1" stroke="#59A96A" stroke-width="2.5"/>
+<text x="1435" y="339" text-anchor="middle" class="boxTitle">SQLite</text><text x="1435" y="369" text-anchor="middle" class="small">Accounts and metadata</text>
+<rect x="1320" y="430" width="230" height="100" rx="18" fill="#EFF9F1" stroke="#59A96A" stroke-width="2.5"/>
+<text x="1435" y="469" text-anchor="middle" class="boxTitle">ChromaDB</text><text x="1435" y="499" text-anchor="middle" class="small">Vector store and search</text>
+<rect x="1320" y="560" width="230" height="100" rx="18" fill="#EFF9F1" stroke="#59A96A" stroke-width="2.5"/>
+<text x="1435" y="599" text-anchor="middle" class="boxTitle">File Storage</text><text x="1435" y="629" text-anchor="middle" class="small">Uploaded source files</text>
+
+<!-- flow connectors -->
+<path d="M280 435 H338" class="flow"/>
+<path d="M620 435 H673" class="flow"/>
+<path d="M845 435 H898" class="flow"/>
+<path d="M1010 265 V293" class="integrate"/>
+<path d="M1325 265 V280 H1200 V293" class="integrate"/>
+<path d="M1255 430 H1285 V350 H1308" class="data"/>
+<path d="M1285 430 V480 H1308" class="data"/>
+<path d="M1285 480 V610 H1308" class="data"/>
+
+<!-- outputs/features -->
+<rect x="55" y="725" width="1495" height="205" rx="24" fill="#FAF8FF" stroke="#8B72D5" stroke-width="2.5"/>
+<rect x="570" y="704" width="470" height="48" rx="24" fill="url(#purpleHead)"/>
+<text x="805" y="736" text-anchor="middle" class="subtitle">STUDY FEATURES AND OUTPUTS</text>
+<g>
+ <rect x="80" y="775" width="270" height="125" rx="18" fill="#FFFFFF" stroke="#D5C9F5" stroke-width="2"/>
+ <text x="215" y="817" text-anchor="middle" class="boxTitle">RAG Chat</text><text x="215" y="850" text-anchor="middle" class="small">Answers grounded in sources</text><text x="215" y="877" text-anchor="middle" class="tiny">with source references</text>
+ <rect x="370" y="775" width="270" height="125" rx="18" fill="#FFFFFF" stroke="#D5C9F5" stroke-width="2"/>
+ <text x="505" y="817" text-anchor="middle" class="boxTitle">Study Materials</text><text x="505" y="850" text-anchor="middle" class="small">Summaries, notes, questions</text><text x="505" y="877" text-anchor="middle" class="tiny">MCQs and flashcards</text>
+ <rect x="660" y="775" width="270" height="125" rx="18" fill="#FFFFFF" stroke="#D5C9F5" stroke-width="2"/>
+ <text x="795" y="817" text-anchor="middle" class="boxTitle">Duplicate Detection</text><text x="795" y="850" text-anchor="middle" class="small">Groups likely repeated</text><text x="795" y="877" text-anchor="middle" class="tiny">questions for review</text>
+ <rect x="950" y="775" width="270" height="125" rx="18" fill="#FFFFFF" stroke="#D5C9F5" stroke-width="2"/>
+ <text x="1085" y="817" text-anchor="middle" class="boxTitle">Quizzes</text><text x="1085" y="850" text-anchor="middle" class="small">Configurable practice</text><text x="1085" y="877" text-anchor="middle" class="tiny">with answer explanations</text>
+ <rect x="1240" y="775" width="270" height="125" rx="18" fill="#FFFFFF" stroke="#D5C9F5" stroke-width="2"/>
+ <text x="1375" y="817" text-anchor="middle" class="boxTitle">Export</text><text x="1375" y="850" text-anchor="middle" class="small">PDF · DOCX · TXT</text><text x="1375" y="877" text-anchor="middle" class="tiny">Generated content</text>
+</g>
+</svg>
+
