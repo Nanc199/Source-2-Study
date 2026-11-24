@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="920" viewBox="0 0 1600 920" role="img" aria-labelledby="title desc">
+<title id="title">Source2Study System Architecture</title>
+<desc id="desc">Next.js frontend communicates through a REST API to a FastAPI backend, which connects to SQLite, ChromaDB, file storage, Gemini API, and Sentence Transformers.</desc>
+<defs>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L11,6 L1,11 Z" fill="#344054"/></marker>
+  <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L11,6 L1,11 Z" fill="#1D4ED8"/></marker>
+  <style>
+    .title{font:700 34px 'Times New Roman',serif;fill:#172B4D}.label{font:700 24px Arial,sans-serif;fill:#182230}.sub{font:400 19px Arial,sans-serif;fill:#475467}.small{font:400 17px Arial,sans-serif;fill:#475467}.box{stroke:#344054;stroke-width:2.5;rx:18}.line{fill:none;stroke:#344054;stroke-width:4;marker-end:url(#arrow)}.branch{fill:none;stroke:#1D4ED8;stroke-width:3.5;marker-end:url(#arrowBlue)}
+  </style>
+</defs>
+<rect width="1600" height="920" fill="#FFFFFF"/>
+<text x="800" y="66" text-anchor="middle" class="title">System Architecture of Source2Study</text>
+<!-- client layer -->
+<rect x="105" y="340" width="300" height="150" class="box" fill="#EAF2FF" stroke="#1D4ED8"/>
+<text x="255" y="397" text-anchor="middle" class="label">Frontend</text><text x="255" y="435" text-anchor="middle" class="sub">Next.js Web Application</text>
+<!-- api layer -->
+<rect x="525" y="340" width="250" height="150" class="box" fill="#F2F4F7"/>
+<text x="650" y="397" text-anchor="middle" class="label">REST API</text><text x="650" y="435" text-anchor="middle" class="sub">HTTP / JSON</text>
+<!-- service layer -->
+<rect x="895" y="325" width="330" height="180" class="box" fill="#EAF2FF" stroke="#1D4ED8"/>
+<text x="1060" y="390" text-anchor="middle" class="label">FastAPI Backend</text><text x="1060" y="430" text-anchor="middle" class="sub">Application Services</text><text x="1060" y="464" text-anchor="middle" class="small">RAG · chat · quiz · document processing</text>
+<!-- main flow -->
+<path d="M405 415 H515" class="line"/><path d="M775 415 H885" class="line"/>
+<!-- data/AI dependency bus -->
+<path d="M1225 415 H1300 V182 H1335" class="branch"/>
+<path d="M1300 182 V630 H1335" fill="none" stroke="#1D4ED8" stroke-width="3.5"/>
+<path d="M1300 294 H1335" class="branch"/><path d="M1300 406 H1335" class="branch"/><path d="M1300 518 H1335" class="branch"/><path d="M1300 630 H1335" class="branch"/>
+<!-- dependencies -->
+<rect x="1345" y="135" width="220" height="94" class="box" fill="#F8FAFC"/><text x="1455" y="174" text-anchor="middle" class="label">SQLite</text><text x="1455" y="203" text-anchor="middle" class="small">Relational data</text>
+<rect x="1345" y="247" width="220" height="94" class="box" fill="#F8FAFC"/><text x="1455" y="286" text-anchor="middle" class="label">ChromaDB</text><text x="1455" y="315" text-anchor="middle" class="small">Vector store</text>
+<rect x="1345" y="359" width="220" height="94" class="box" fill="#F8FAFC"/><text x="1455" y="398" text-anchor="middle" class="label">File Storage</text><text x="1455" y="427" text-anchor="middle" class="small">Uploaded documents</text>
+<rect x="1345" y="471" width="220" height="94" class="box" fill="#F8FAFC"/><text x="1455" y="510" text-anchor="middle" class="label">Gemini API</text><text x="1455" y="539" text-anchor="middle" class="small">Generative AI</text>
+<rect x="1345" y="583" width="220" height="94" class="box" fill="#F8FAFC"/><text x="1455" y="622" text-anchor="middle" class="label">Sentence Transformers</text><text x="1455" y="651" text-anchor="middle" class="small">Text embeddings</text>
+<!-- legend and caption -->
+<line x1="105" y1="835" x2="195" y2="835" stroke="#344054" stroke-width="4" marker-end="url(#arrow)"/><text x="215" y="842" class="small">Request and response flow</text>
+<line x1="560" y1="835" x2="650" y2="835" stroke="#1D4ED8" stroke-width="3.5" marker-end="url(#arrowBlue)"/><text x="670" y="842" class="small">Backend integrations</text>
+
+</svg>
+
+
