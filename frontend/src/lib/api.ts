@@ -23,8 +23,11 @@ function fileHeaders(): Record<string, string> {
 async function handleResponse(res: Response) {
   if (res.status === 401) {
     Cookies.remove('token');
-    if (typeof window !== 'undefined') window.location.href = '/login';
-    throw new Error('Unauthorized');
+    if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/signup') && !window.location.pathname.startsWith('/verify-email') && !window.location.pathname.startsWith('/reset-password') && !window.location.pathname.startsWith('/forgot-password')) {
+      window.location.href = '/login';
+    }
+    const data = await res.json().catch(() => ({ detail: 'Unauthorized' }));
+    throw new Error(data.detail || 'Unauthorized');
   }
   if (!res.ok) {
     const data = await res.json().catch(() => ({ detail: 'Request failed' }));
@@ -67,7 +70,10 @@ export async function apiPostDownload(path: string, body?: unknown): Promise<Blo
   const res = await fetch(`${BASE_URL}${path}`, {
     method: 'POST', headers: authHeaders(), body: body ? JSON.stringify(body) : undefined,
   });
-  if (!res.ok) throw new Error('Download failed');
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Download failed' }));
+    throw new Error(err.detail || 'Download failed');
+  }
   return res.blob();
 }
 
@@ -77,6 +83,14 @@ export const auth = {
     apiPost('/api/auth/register', data),
   login: (data: { email: string; password: string }) =>
     apiPost('/api/auth/login', data),
+  verifyEmail: (token: string) =>
+    apiPost('/api/auth/verify-email', { token }),
+  resendVerification: (email: string) =>
+    apiPost('/api/auth/resend-verification', { email }),
+  forgotPassword: (email: string) =>
+    apiPost('/api/auth/forgot-password', { email }),
+  resetPassword: (data: { token: string; new_password: string }) =>
+    apiPost('/api/auth/reset-password', data),
   getProfile: () => apiGet('/api/auth/me'),
 };
 
@@ -152,8 +166,12 @@ export const questionsApi = {
     apiPost(`/api/collections/${collectionId}/deduplicate-documents`, { source_ids }),
   exportDeduplicatedDocuments: (collectionId: number, source_ids: number[], format: string) =>
     apiPostDownload(`/api/collections/${collectionId}/deduplicate-documents/export?format=${format}`, { source_ids }),
-  detectDuplicates: (collectionId: number, data?: { similarity_threshold?: number; use_llm_verification?: boolean }) =>
+  detectDuplicates: (collectionId: number, data?: { similarity_threshold?: number; use_llm_verification?: boolean; source_ids?: number[] }) =>
     apiPost(`/api/collections/${collectionId}/detect-duplicates`, data),
+  exportUniqueQuestionsPdf: (collectionId: number, data?: { similarity_threshold?: number; source_ids?: number[] }) =>
+    apiPostDownload(`/api/collections/${collectionId}/export-unique-questions-pdf`, data),
+  exportRepeatedQuestionsPdf: (collectionId: number, data?: { similarity_threshold?: number; source_ids?: number[] }) =>
+    apiPostDownload(`/api/collections/${collectionId}/export-repeated-questions-pdf`, data),
   getQuestions: (collectionId: number, params?: Record<string, string>) => {
     const q = params ? '?' + new URLSearchParams(params).toString() : '';
     return apiGet(`/api/collections/${collectionId}/questions${q}`);

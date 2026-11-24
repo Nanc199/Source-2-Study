@@ -1,5 +1,5 @@
 """
-StudyMind AI - Quiz Service
+Source2Study - Quiz Service
 Generates and scores interactive quizzes.
 """
 

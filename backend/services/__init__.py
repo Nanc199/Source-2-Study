@@ -1,1 +1,1 @@
-# StudyMind AI Services
+# Source2Study Services

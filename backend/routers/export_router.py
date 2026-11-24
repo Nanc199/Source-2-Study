@@ -1,5 +1,5 @@
 """
-StudyMind AI - Export Router
+Source2Study - Export Router
 """
 
 import io
@@ -25,7 +25,7 @@ def export_pdf(
     """Export content as PDF."""
     content = _get_export_content(data, db, current_user)
     export = ExportService()
-    pdf_bytes = export.export_pdf(content, data.title or "StudyMind Export")
+    pdf_bytes = export.export_pdf(content, data.title or "Source2Study Export")
     return StreamingResponse(
         io.BytesIO(pdf_bytes),
         media_type="application/pdf",
@@ -42,7 +42,7 @@ def export_docx(
     """Export content as DOCX."""
     content = _get_export_content(data, db, current_user)
     export = ExportService()
-    docx_bytes = export.export_docx(content, data.title or "StudyMind Export")
+    docx_bytes = export.export_docx(content, data.title or "Source2Study Export")
     return StreamingResponse(
         io.BytesIO(docx_bytes),
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -59,7 +59,7 @@ def export_txt(
     """Export content as TXT."""
     content = _get_export_content(data, db, current_user)
     export = ExportService()
-    txt_bytes = export.export_txt(content, data.title or "StudyMind Export")
+    txt_bytes = export.export_txt(content, data.title or "Source2Study Export")
     return StreamingResponse(
         io.BytesIO(txt_bytes),
         media_type="text/plain",

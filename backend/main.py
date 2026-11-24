@@ -1,5 +1,5 @@
 """
-StudyMind AI - Main Application
+Source2Study - Main Application
 FastAPI server entry point.
 """
 
@@ -12,25 +12,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from config import settings
-from database import engine, Base
+from database import init_db
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
-logger = logging.getLogger("studymind")
+logger = logging.getLogger("source2study")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and shutdown events."""
     # Startup
-    logger.info("Starting StudyMind AI...")
+    logger.info("Starting Source2Study...")
     
-    # Create database tables
-    Base.metadata.create_all(bind=engine)
-    logger.info("Database tables created.")
+    # Initialize database tables and migrations
+    init_db()
+    logger.info("Database initialized.")
     
     # Create upload directory
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
@@ -47,13 +47,13 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("StudyMind AI shutting down.")
+    logger.info("Source2Study shutting down.")
 
 
 # Create FastAPI app
 app = FastAPI(
-    title="StudyMind AI",
-    description="AI-powered RAG-based Learning and Exam Preparation Platform",
+    title="Source2Study",
+    description="AI-powered Learning and Exam Preparation Platform",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -83,7 +83,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 def health_check():
     return {
         "status": "healthy",
-        "service": "StudyMind AI",
+        "service": "Source2Study",
         "version": "1.0.0",
         "gemini_configured": bool(settings.GEMINI_API_KEY),
     }

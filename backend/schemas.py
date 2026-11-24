@@ -1,11 +1,26 @@
 """
-StudyMind AI - Pydantic Schemas
+Source2Study - Pydantic Schemas
 Request and response schemas for all API endpoints.
 """
 
+import re
 from datetime import datetime
 from typing import List, Optional, Any, Dict
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, field_validator
+
+
+def validate_strong_password(v: str) -> str:
+    if len(v) < 8:
+        raise ValueError("Password must be at least 8 characters long")
+    if not re.search(r"[A-Z]", v):
+        raise ValueError("Password must contain at least one uppercase letter (A-Z)")
+    if not re.search(r"[a-z]", v):
+        raise ValueError("Password must contain at least one lowercase letter (a-z)")
+    if not re.search(r"[0-9]", v):
+        raise ValueError("Password must contain at least one numerical digit (0-9)")
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>\-_+=\[\]\\/~`]", v):
+        raise ValueError("Password must contain at least one special character (@, #, $, %, !, etc.)")
+    return v
 
 
 # ============================================================
@@ -13,13 +28,18 @@ from pydantic import BaseModel, Field, EmailStr
 # ============================================================
 
 class UserCreate(BaseModel):
-    email: str = Field(..., min_length=5, max_length=255, description="User email address")
+    email: EmailStr = Field(..., description="User email address")
     full_name: str = Field(..., min_length=1, max_length=255, description="Full name")
-    password: str = Field(..., min_length=6, max_length=128, description="Password")
+    password: str = Field(..., max_length=128, description="Password")
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        return validate_strong_password(v)
 
 
 class UserLogin(BaseModel):
-    email: str = Field(..., description="User email address")
+    email: EmailStr = Field(..., description="User email address")
     password: str = Field(..., description="Password")
 
 
@@ -27,6 +47,7 @@ class UserResponse(BaseModel):
     id: int
     email: str
     full_name: str
+    is_verified: bool = False
     created_at: datetime
     updated_at: datetime
 
@@ -37,10 +58,38 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    user: Optional[UserResponse] = None
 
 
 class TokenData(BaseModel):
     user_id: Optional[int] = None
+    email: Optional[str] = None
+
+
+class VerifyEmailRequest(BaseModel):
+    token: str = Field(..., min_length=1, description="Verification token")
+
+
+class ResendVerificationRequest(BaseModel):
+    email: EmailStr = Field(..., description="Registered email address")
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr = Field(..., description="Registered email address")
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str = Field(..., min_length=1, description="Reset token")
+    new_password: str = Field(..., max_length=128, description="New strong password")
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        return validate_strong_password(v)
+
+
+class MessageResponse(BaseModel):
+    message: str
     email: Optional[str] = None
 
 
@@ -248,16 +297,22 @@ class DuplicateGroupResponse(BaseModel):
 class DuplicateDetectionRequest(BaseModel):
     similarity_threshold: Optional[float] = Field(0.85, ge=0.5, le=1.0)
     use_llm_verification: Optional[bool] = True
+    source_ids: Optional[List[int]] = None
 
 
 class DuplicateDetectionResult(BaseModel):
     total_documents: int
+    total_pages_processed: Optional[int] = 0
     total_questions: int
     unique_questions: int
-    duplicate_questions: int
+    repeated_groups_count: Optional[int] = 0
+    total_duplicate_occurrences: Optional[int] = 0
+    duplicate_questions: Optional[int] = 0
     duplicate_percentage: float
-    groups_created: int
+    groups_created: Optional[int] = 0
     most_frequent_questions: List[Dict[str, Any]] = []
+    repeated_question_groups: List[Dict[str, Any]] = []
+    unique_questions_list: List[Dict[str, Any]] = []
 
 
 class GroupUpdateRequest(BaseModel):
@@ -378,7 +433,7 @@ class ExportRequest(BaseModel):
     )
     content_id: Optional[int] = Field(None, description="ID of specific content to export")
     collection_id: Optional[int] = Field(None, description="Collection ID for bulk export")
-    title: Optional[str] = Field("StudyMind Export", description="Title for the export document")
+    title: Optional[str] = Field("Source2Study Export", description="Title for the export document")
     include_sources: bool = Field(True, description="Include source references")
 
 

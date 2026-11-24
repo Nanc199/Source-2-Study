@@ -1,1 +1,1 @@
-# StudyMind AI Backend
+# Source2Study Backend

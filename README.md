@@ -1,4 +1,4 @@
-# 🧠 StudyMind AI
+# 🧠 Source2Study
 
 **Upload Anything. Learn Everything. Prepare Smarter.**
 

@@ -1,5 +1,5 @@
 """
-StudyMind AI - Dashboard Router
+Source2Study - Dashboard Router
 """
 
 from typing import List

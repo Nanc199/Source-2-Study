@@ -1,5 +1,5 @@
 """
-StudyMind AI - Collections Router
+Source2Study - Collections Router
 """
 
 from typing import List

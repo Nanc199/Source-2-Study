@@ -145,19 +145,6 @@ export default function FlashcardsPage() {
               Next <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-
-          {/* Card Grid */}
-          <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {cards.map((c: any, i: number) => (
-              <button key={c.id} onClick={() => { setCurrentIdx(i); setFlipped(false); }}
-                className={`p-3 rounded-xl text-left text-xs border transition-colors ${
-                  i === currentIdx ? 'border-purple-500 bg-purple-50' : 'border-gray-100 bg-white hover:bg-gray-50'
-                }`}>
-                <p className="font-medium text-gray-700 line-clamp-2">{c.question}</p>
-                {c.is_favorite && <Heart className="w-3 h-3 text-red-400 fill-current mt-1" />}
-              </button>
-            ))}
-          </div>
         </div>
       )}
     </DashboardLayout>

@@ -1,5 +1,5 @@
 """
-StudyMind AI - Questions & Duplicate Detection Router
+Source2Study - Questions & Duplicate Detection Router
 """
 
 from typing import List, Optional
@@ -122,7 +122,7 @@ def detect_duplicates(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Run duplicate detection on all questions in a collection."""
+    """Run duplicate detection on all questions in a collection or selected sources."""
     collection = db.query(Collection).filter(
         Collection.id == collection_id, Collection.user_id == current_user.id
     ).first()
@@ -136,8 +136,96 @@ def detect_duplicates(
         current_user.id,
         similarity_threshold=data.similarity_threshold,
         use_llm_verification=data.use_llm_verification,
+        source_ids=data.source_ids,
     )
+    # Ensure legacy compatibility fields are filled
+    result["groups_created"] = result.get("unique_questions", 0)
+    result["duplicate_questions"] = result.get("total_duplicate_occurrences", 0)
+    result["most_frequent_questions"] = [
+        {"question": g["canonical_question"], "frequency": g["frequency"], "topic": g.get("topic")}
+        for g in result.get("repeated_question_groups", [])[:10]
+    ]
     return DuplicateDetectionResult(**result)
+
+
+@router.post("/collections/{collection_id}/export-unique-questions-pdf")
+def export_unique_questions_pdf(
+    collection_id: int,
+    data: DuplicateDetectionRequest = DuplicateDetectionRequest(),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Generate and download a PDF containing exclusively unique questions."""
+    collection = db.query(Collection).filter(
+        Collection.id == collection_id, Collection.user_id == current_user.id
+    ).first()
+    if not collection:
+        raise HTTPException(status_code=404, detail="Collection not found")
+
+    from services.duplicate_detector import DuplicateDetector
+    from services.export_service import ExportService
+
+    detector = DuplicateDetector(db)
+    result = detector.detect_duplicates(
+        collection_id,
+        current_user.id,
+        similarity_threshold=data.similarity_threshold,
+        use_llm_verification=data.use_llm_verification,
+        source_ids=data.source_ids,
+    )
+
+    export = ExportService()
+    pdf_bytes = export.export_unique_questions_pdf(
+        questions=result.get("unique_questions_list", []),
+        title=f"Source2Study - Unique Questions Bank ({collection.name})",
+        stats=result,
+    )
+
+    return StreamingResponse(
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="unique_questions_bank.pdf"'},
+    )
+
+
+@router.post("/collections/{collection_id}/export-repeated-questions-pdf")
+def export_repeated_questions_pdf(
+    collection_id: int,
+    data: DuplicateDetectionRequest = DuplicateDetectionRequest(),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Generate and download a PDF report containing exclusively repeated questions and occurrences."""
+    collection = db.query(Collection).filter(
+        Collection.id == collection_id, Collection.user_id == current_user.id
+    ).first()
+    if not collection:
+        raise HTTPException(status_code=404, detail="Collection not found")
+
+    from services.duplicate_detector import DuplicateDetector
+    from services.export_service import ExportService
+
+    detector = DuplicateDetector(db)
+    result = detector.detect_duplicates(
+        collection_id,
+        current_user.id,
+        similarity_threshold=data.similarity_threshold,
+        use_llm_verification=data.use_llm_verification,
+        source_ids=data.source_ids,
+    )
+
+    export = ExportService()
+    pdf_bytes = export.export_repeated_questions_pdf(
+        repeated_groups=result.get("repeated_question_groups", []),
+        title=f"Source2Study - Repeated Questions Analysis ({collection.name})",
+        stats=result,
+    )
+
+    return StreamingResponse(
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="repeated_questions_analysis.pdf"'},
+    )
 
 
 @router.get("/collections/{collection_id}/questions", response_model=List[ExtractedQuestionResponse])

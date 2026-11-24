@@ -11,7 +11,7 @@ const features = [
   { icon: Upload, title: 'Multi-Source Upload', desc: 'Upload PDFs, DOCX, PPTX, images, URLs, and YouTube videos all in one place.', color: 'from-blue-500 to-cyan-500' },
   { icon: MessageSquare, title: 'AI Chat Assistant', desc: 'Ask questions about your study materials and get accurate, sourced answers.', color: 'from-purple-500 to-pink-500' },
   { icon: BookOpen, title: 'Smart Study Generator', desc: 'Auto-generate summaries, MCQs, flashcards, and exam-oriented answers.', color: 'from-amber-500 to-orange-500' },
-  { icon: GitCompareArrows, title: 'Duplicate Detection', desc: 'Combine question papers and detect semantically similar questions using AI.', color: 'from-emerald-500 to-teal-500', badge: 'Signature Feature' },
+  { icon: GitCompareArrows, title: 'Duplicate Detection', desc: 'Combine question papers and detect semantically similar questions using AI.', color: 'from-emerald-500 to-teal-500' },
   { icon: ClipboardCheck, title: 'Interactive Quizzes', desc: 'Take timed quizzes with instant scoring and detailed explanations.', color: 'from-red-500 to-rose-500' },
   { icon: Layers, title: 'Flashcards & Notes', desc: 'Flip-card flashcards and chapter-wise notes for quick revision.', color: 'from-indigo-500 to-violet-500' },
 ];
@@ -41,7 +41,7 @@ export default function LandingPage() {
             <div className="w-9 h-9 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center">
               <Brain className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-lg text-gray-900">StudyMind AI</span>
+            <span className="font-bold text-lg text-gray-900">Source2Study</span>
           </Link>
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">Features</a>
@@ -51,7 +51,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900 px-4 py-2">Sign In</Link>
             <Link href="/signup" className="text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 px-5 py-2.5 rounded-xl shadow-lg shadow-purple-200 transition-all">
-              Get Started Free
+              Get Started
             </Link>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function LandingPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Link href="/signup" className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold px-8 py-4 rounded-2xl shadow-xl shadow-purple-200 hover:shadow-2xl hover:shadow-purple-300 transition-all text-lg">
-              Get Started Free <ArrowRight className="w-5 h-5" />
+              Get Started <ArrowRight className="w-5 h-5" />
             </Link>
             <a href="#features" className="inline-flex items-center justify-center gap-2 bg-white text-gray-700 font-semibold px-8 py-4 rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all text-lg">
               See Features
@@ -107,7 +107,7 @@ export default function LandingPage() {
               <div className="w-3 h-3 rounded-full bg-red-400" />
               <div className="w-3 h-3 rounded-full bg-yellow-400" />
               <div className="w-3 h-3 rounded-full bg-green-400" />
-              <span className="ml-4 text-xs text-gray-400 font-mono">studymind.ai/dashboard</span>
+              <span className="ml-4 text-xs text-gray-400 font-mono">source2study.ai/dashboard</span>
             </div>
             <div className="p-8 grid grid-cols-4 gap-4">
               {[
@@ -136,11 +136,6 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f) => (
               <div key={f.title} className="bg-white rounded-2xl p-7 border border-gray-100 hover:shadow-xl hover:shadow-gray-100 transition-all duration-300 group relative">
-                {f.badge && (
-                  <span className="absolute top-4 right-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                    {f.badge}
-                  </span>
-                )}
                 <div className={`w-12 h-12 bg-gradient-to-br ${f.color} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
                   <f.icon className="w-6 h-6 text-white" />
                 </div>
@@ -178,7 +173,7 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-full px-4 py-1.5 mb-4">
               <Star className="w-4 h-4 text-emerald-600" />
-              <span className="text-sm font-medium text-emerald-700">Signature Feature</span>
+              <span className="text-sm font-medium text-emerald-700">Exam Paper Analysis</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Smart Duplicate Question Detection</h2>
             <p className="text-gray-500 text-lg max-w-2xl mx-auto">Upload multiple question papers and get one consolidated document with zero repeated questions.</p>
@@ -251,7 +246,7 @@ export default function LandingPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Ready to Transform Your Study Experience?</h2>
           <p className="text-gray-500 text-lg mb-10">Join thousands of students preparing smarter with AI-powered tools.</p>
           <Link href="/signup" className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold px-8 py-4 rounded-2xl shadow-xl shadow-purple-200 hover:shadow-2xl transition-all text-lg">
-            Get Started Free <ArrowRight className="w-5 h-5" />
+            Get Started <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
@@ -263,9 +258,9 @@ export default function LandingPage() {
             <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center">
               <Brain className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-gray-900">StudyMind AI</span>
+            <span className="font-bold text-gray-900">Source2Study</span>
           </div>
-          <p className="text-sm text-gray-400">© 2024 StudyMind AI. Built for students, powered by AI.</p>
+          <p className="text-sm text-gray-400">© 2024 Source2Study. Built for students, powered by AI.</p>
         </div>
       </footer>
     </div>
