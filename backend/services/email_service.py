@@ -216,6 +216,15 @@ class EmailService:
         smtp_user = (settings.SMTP_USER or "").strip()
         smtp_password = settings.SMTP_PASSWORD or ""
 
+        if not smtp_user:
+            error_msg = "SMTP_USER is missing. Set the sender Gmail address in backend/.env."
+            logger.error("Cannot dispatch %s email: SMTP credentials are missing", email_type)
+            raise EmailDeliveryError(error_msg, status_code=503)
+        if not smtp_password:
+            error_msg = "SMTP_PASSWORD is missing in backend/.env. For Gmail, create and set a Google App Password (not your regular account password)."
+            logger.error("Cannot dispatch %s email: SMTP_PASSWORD is missing", email_type)
+            raise EmailDeliveryError(error_msg, status_code=503)
+
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
         msg["From"] = f"{from_name} <{from_email}>"
@@ -244,8 +253,8 @@ class EmailService:
 
         except smtplib.SMTPAuthenticationError as e:
             detail = e.smtp_error.decode("utf-8", errors="ignore") if hasattr(e, "smtp_error") and isinstance(e.smtp_error, bytes) else str(e)
-            error_msg = f"SMTP authentication failed for user '{smtp_user}'. Please check your email credentials or App Password. ({detail})"
-            logger.error(error_msg)
+            error_msg = "Gmail rejected the SMTP login. Check SMTP_USER and use a valid Google App Password in backend/.env (not your regular Gmail password)."
+            logger.error("SMTP authentication failed for %s: %s", smtp_user, detail)
             raise EmailDeliveryError(error_msg, status_code=500)
 
         except smtplib.SMTPConnectError as e:

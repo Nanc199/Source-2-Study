@@ -1,6 +1,9 @@
 import Cookies from 'js-cookie';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Keep API requests on the frontend origin; Next.js proxies them to the local backend.
+const BASE_URL = typeof window !== 'undefined'
+  ? ''
+  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000');
 
 function getToken(): string | undefined {
   return Cookies.get('token');

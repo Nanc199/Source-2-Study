@@ -52,11 +52,11 @@ class Settings(BaseSettings):
     TESSERACT_CMD: str = Field(default_factory=_detect_tesseract_cmd)
 
     # Email / SMTP Settings
-    SMTP_HOST: str = ""
+    SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
-    SMTP_USER: str = ""
+    SMTP_USER: str = "kaur07nnancy@gmail.com"
     SMTP_PASSWORD: str = ""
-    SMTP_FROM_EMAIL: str = "noreply@source2study.com"
+    SMTP_FROM_EMAIL: str = "kaur07nnancy@gmail.com"
     SMTP_FROM_NAME: str = "Source2Study"
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
