@@ -7,19 +7,23 @@ interface User {
   id: number;
   email: string;
   full_name: string;
+  is_verified?: boolean;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (fullName: string, email: string, password: string) => Promise<void>;
+  register: (fullName: string, email: string, password: string) => Promise<{ message: string; email?: string }>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null, loading: true,
-  login: async () => {}, register: async () => {}, logout: () => {},
+  user: null,
+  loading: true,
+  login: async () => {},
+  register: async () => ({ message: '' }),
+  logout: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -43,15 +47,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     const data = await auth.login({ email, password });
     Cookies.set('token', data.access_token, { expires: 7 });
-    const profile = await auth.getProfile();
-    setUser(profile);
+    if (data.user) {
+      setUser(data.user);
+    } else {
+      const profile = await auth.getProfile();
+      setUser(profile);
+    }
   };
 
   const register = async (fullName: string, email: string, password: string) => {
     const data = await auth.register({ full_name: fullName, email, password });
-    Cookies.set('token', data.access_token, { expires: 7 });
-    const profile = await auth.getProfile();
-    setUser(profile);
+    return data;
   };
 
   const logout = () => {

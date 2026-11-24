@@ -2,13 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { dashboardApi, collectionsApi } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import {
   FileText, FolderOpen, HelpCircle, ClipboardCheck,
-  Upload, MessageSquare, Sparkles, ArrowRight, Clock
+  MessageSquare, Sparkles, GitCompareArrows, ArrowRight,
+  Clock, Plus, CheckCircle2, BookOpen
 } from 'lucide-react';
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   const [stats, setStats] = useState<any>(null);
   const [activity, setActivity] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
@@ -26,84 +29,153 @@ export default function DashboardPage() {
     }).finally(() => setLoading(false));
   }, []);
 
-  const statCards = [
-    { label: 'Total Sources', value: stats?.total_sources || 0, icon: FileText, color: 'bg-blue-50 text-blue-600', iconBg: 'bg-blue-100' },
-    { label: 'Collections', value: stats?.total_collections || 0, icon: FolderOpen, color: 'bg-purple-50 text-purple-600', iconBg: 'bg-purple-100' },
-    { label: 'Questions Extracted', value: stats?.total_questions || 0, icon: HelpCircle, color: 'bg-emerald-50 text-emerald-600', iconBg: 'bg-emerald-100' },
-    { label: 'Quizzes Completed', value: stats?.total_quizzes || 0, icon: ClipboardCheck, color: 'bg-amber-50 text-amber-600', iconBg: 'bg-amber-100' },
+  const statMetrics = [
+    { label: 'Study Resources', value: stats?.total_sources || 0, icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'Collections', value: stats?.total_collections || 0, icon: FolderOpen, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: 'Indexed Questions', value: stats?.total_questions || 0, icon: HelpCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Quizzes Taken', value: stats?.total_quizzes || 0, icon: ClipboardCheck, color: 'text-amber-600', bg: 'bg-amber-50' },
   ];
 
   return (
     <DashboardLayout>
+      {/* Header Banner */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">Welcome back! Here's your learning overview.</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+          Welcome back, {user?.full_name?.split(' ')[0] || 'Student'}
+        </h1>
+        <p className="text-gray-500 text-sm mt-1">
+          Your centralized AI study command center. Query your materials, find recurring exam questions, and generate study resources.
+        </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        {statCards.map((s) => (
-          <div key={s.label} className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+      {/* Metrics Row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {statMetrics.map((item) => (
+          <div key={item.label} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-3">
-              <div className={`w-10 h-10 ${s.iconBg} rounded-xl flex items-center justify-center`}>
-                <s.icon className={`w-5 h-5 ${s.color.split(' ')[1]}`} />
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{item.label}</span>
+              <div className={`w-8 h-8 ${item.bg} rounded-xl flex items-center justify-center`}>
+                <item.icon className={`w-4 h-4 ${item.color}`} />
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900">{s.value}</div>
-            <div className="text-sm text-gray-500 mt-0.5">{s.label}</div>
+            <div className="text-2xl font-bold text-gray-900">{loading ? '...' : item.value}</div>
           </div>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Quick Actions */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-          <div className="space-y-3">
-            {[
-              { href: '/collections', icon: Upload, label: 'Upload Sources', desc: 'Add new study materials', color: 'text-purple-600 bg-purple-50' },
-              { href: '/chat', icon: MessageSquare, label: 'Start AI Chat', desc: 'Ask about your docs', color: 'text-blue-600 bg-blue-50' },
-              { href: '/quiz', icon: ClipboardCheck, label: 'Take a Quiz', desc: 'Test your knowledge', color: 'text-emerald-600 bg-emerald-50' },
-              { href: '/duplicate-detector', icon: Sparkles, label: 'Detect Duplicates', desc: 'Analyze question papers', color: 'text-amber-600 bg-amber-50' },
-            ].map((a) => (
-              <Link key={a.href} href={a.href} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${a.color}`}>
-                  <a.icon className="w-5 h-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-gray-900">{a.label}</div>
-                  <div className="text-xs text-gray-400">{a.desc}</div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
-              </Link>
-            ))}
+      {/* Primary Feature Workspaces */}
+      <div className="mb-8">
+        <h2 className="text-base font-semibold text-gray-900 mb-4">Core Workspaces</h2>
+        <div className="grid md:grid-cols-3 gap-5">
+          {/* AI Chat Workspace */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
+                <MessageSquare className="w-5 h-5" />
+              </div>
+              <h3 className="font-semibold text-gray-900 text-base mb-1.5">AI Chat Assistant</h3>
+              <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                Engage in conversational Q&A with your documents. Get accurate, verified answers backed by source citations.
+              </p>
+            </div>
+            <Link
+              href="/chat"
+              className="inline-flex items-center justify-between px-4 py-2.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-semibold rounded-xl transition-colors"
+            >
+              <span>Start Asking Questions</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Duplicate Detector Workspace */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
+                <GitCompareArrows className="w-5 h-5" />
+              </div>
+              <h3 className="font-semibold text-gray-900 text-base mb-1.5">Duplicate Question Detector</h3>
+              <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                Upload past-year question papers (PDF, scanned, images). Identify repeated exam questions and download consolidated question banks.
+              </p>
+            </div>
+            <Link
+              href="/duplicate-detector"
+              className="inline-flex items-center justify-between px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-xl transition-colors"
+            >
+              <span>Analyze Question Papers</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Study Resources Workspace */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
+                <FolderOpen className="w-5 h-5" />
+              </div>
+              <h3 className="font-semibold text-gray-900 text-base mb-1.5">Study Resources</h3>
+              <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                Upload PDFs, DOCX, presentation slides, images, website links, or YouTube videos organized by subjects.
+              </p>
+            </div>
+            <Link
+              href="/collections"
+              className="inline-flex items-center justify-between px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-xl transition-colors"
+            >
+              <span>View & Upload Resources</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
+      </div>
 
-        {/* Recent Collections */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+      {/* Two-Column Section: Collections & Activity */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Collections Overview */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Collections</h2>
-            <Link href="/collections" className="text-xs text-purple-600 font-medium hover:text-purple-700">View all</Link>
+            <div>
+              <h2 className="font-semibold text-gray-900 text-base">Your Study Collections</h2>
+              <p className="text-xs text-gray-500 mt-0.5">Organized folders of course materials</p>
+            </div>
+            <Link
+              href="/collections"
+              className="text-xs font-semibold text-purple-600 hover:text-purple-700"
+            >
+              View all ({collections.length}) &rarr;
+            </Link>
           </div>
+
           {collections.length === 0 ? (
-            <div className="text-center py-8 text-gray-400">
-              <FolderOpen className="w-10 h-10 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No collections yet</p>
-              <Link href="/collections" className="text-purple-600 text-sm font-medium mt-2 inline-block">Create one →</Link>
+            <div className="text-center py-10 border border-dashed border-gray-200 rounded-xl">
+              <FolderOpen className="w-10 h-10 mx-auto text-gray-300 mb-2" />
+              <p className="text-sm font-medium text-gray-700">No collections created yet</p>
+              <p className="text-xs text-gray-400 mt-1 mb-4">Create your first subject collection to start uploading papers and materials.</p>
+              <Link
+                href="/collections"
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-600 text-white rounded-xl text-xs font-medium hover:bg-purple-700"
+              >
+                <Plus className="w-3.5 h-3.5" /> Create Collection
+              </Link>
             </div>
           ) : (
-            <div className="space-y-3">
-              {collections.slice(0, 5).map((c: any) => (
-                <Link key={c.id} href={`/collections/${c.id}`} className="block p-3 rounded-xl hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center">
-                      <FolderOpen className="w-4 h-4 text-purple-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-gray-900 truncate">{c.name}</div>
-                      <div className="text-xs text-gray-400">{c.source_count || 0} sources</div>
-                    </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {collections.slice(0, 4).map((c: any) => (
+                <Link
+                  key={c.id}
+                  href={`/collections/${c.id}`}
+                  className="p-4 rounded-xl border border-gray-100 hover:border-purple-200 hover:bg-purple-50/30 transition-all group flex items-start gap-3"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-gray-900 truncate group-hover:text-purple-700">
+                      {c.name}
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-0.5 truncate">
+                      {c.source_count || 0} source documents
+                    </p>
                   </div>
                 </Link>
               ))}
@@ -111,22 +183,26 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Recent Activity */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+        {/* Recent Activity Log */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+          <h2 className="font-semibold text-gray-900 text-base mb-1">Recent Activity</h2>
+          <p className="text-xs text-gray-500 mb-4">Your latest actions and updates</p>
+
           {activity.length === 0 ? (
-            <div className="text-center py-8 text-gray-400">
-              <Clock className="w-10 h-10 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No recent activity</p>
+            <div className="text-center py-10 text-gray-400">
+              <Clock className="w-8 h-8 mx-auto mb-2 opacity-40" />
+              <p className="text-xs">No recent actions recorded.</p>
             </div>
           ) : (
-            <div className="space-y-3">
-              {activity.slice(0, 8).map((a: any, i: number) => (
-                <div key={i} className="flex items-start gap-3 py-2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full mt-1.5 flex-shrink-0" />
-                  <div>
-                    <div className="text-sm text-gray-700">{a.title}</div>
-                    <div className="text-xs text-gray-400">{a.collection_name && `${a.collection_name} · `}{new Date(a.timestamp).toLocaleDateString()}</div>
+            <div className="divide-y divide-gray-50">
+              {activity.slice(0, 6).map((item: any, idx: number) => (
+                <div key={idx} className="py-2.5 flex items-start gap-2.5 text-xs">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-gray-800 font-medium truncate">{item.title}</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      {new Date(item.timestamp).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
               ))}

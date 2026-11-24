@@ -1,5 +1,5 @@
 """
-StudyMind AI - Quiz Router
+Source2Study - Quiz Router
 """
 
 from typing import List

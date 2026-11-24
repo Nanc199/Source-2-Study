@@ -1,5 +1,5 @@
 """
-StudyMind AI - SQLAlchemy Models
+Source2Study - SQLAlchemy Models
 Complete database models for the platform.
 """
 
@@ -18,6 +18,11 @@ class User(Base):
     email = Column(String(255), unique=True, index=True, nullable=False)
     full_name = Column(String(255), nullable=False)
     hashed_password = Column(String(255), nullable=False)
+    is_verified = Column(Boolean, default=False, nullable=False)
+    verification_token = Column(String(255), nullable=True, index=True)
+    verification_token_expires_at = Column(DateTime, nullable=True)
+    reset_password_token = Column(String(255), nullable=True, index=True)
+    reset_password_expires_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
